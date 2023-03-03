@@ -8,9 +8,11 @@ async function getCommits() {
   const prNumber = process.env.PR_NUMBER ?? 11
 
   try {
-    const { data: commits } = await getOctokit(token).rest.pulls(prNumber).listCommits({
-      owner,
-      repo
+    const { data: commits } = await getOctokit(token).rest.pulls({
+      owner: owner,
+      repo: repo,
+      pull_number: prNumber,
+      per_page: 100
     })
   
     return commits
