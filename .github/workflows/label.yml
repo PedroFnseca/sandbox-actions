@@ -41,5 +41,5 @@ jobs:
           });
           console.log(`Comentário criado: ${commentData.html_url}`);
 
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
