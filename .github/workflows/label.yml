@@ -3,17 +3,18 @@ on:
   push:
     branches:
       - 'main'
-      - 'teste'
 
 jobs:
   comment-on-commits:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
       - name: Install dependencies
-        run: npm install
+        run: npm @actions/github
 
       - name: Labeler
         run: node .github/scripts/labeler.js
