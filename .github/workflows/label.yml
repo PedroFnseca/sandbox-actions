@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'teste'
 
 jobs:
   comment-on-commits:
@@ -15,7 +14,7 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: npm install
+        run: npm @actions/github
 
       - name: Labeler
         run: node .github/scripts/labeler.js
