@@ -14,8 +14,8 @@ async function getCommits() {
 
 async function main(){
   const commits = await getCommits()
-  const labels = commits.map(commit => commit.commit.message.match(/(?<=\[).+?(?=\])/g))
-  console.log(labels)
+  
+  console.log(commits)
 }
 
 main()
