@@ -1,18 +1,20 @@
 const { context, getOctokit } = require('@actions/github')
 
+const ocotkit = getOctokit(process.env.GITHUB_TOKEN)
+
 async function getCommits() {
-  const { owner, repo } = context.repo
-  const { data: commits } = await getOctokit().rest.repos.listCommits({
-    owner,
-    repo,
-    per_page: 100
+  const { data } = await ocotkit.repos.listCommits({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    sha: context.sha,
+    per_page: 100,
   })
-  return commits
+  return data
 }
 
 async function main(){
   const commits = await getCommits()
-  const labels = commits.map(commit => commit.commit.message.match(/(?<=\[).+?(?=\])/g))
+  const labels = commits.map(commit => commit.commit.message).join(' ').match(/(?<=\[).+?(?=\])/g)
   console.log(labels)
 }
 
