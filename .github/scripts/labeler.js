@@ -6,8 +6,6 @@ async function getCommits() {
   const token = process.env.GITHUB_TOKEN
   const prNumber = process.env.PR_NUMBER ?? 11
 
-  const octokit = getOctokit(token)
-
   const { data: commits } = await getOctokit(token).rest.pulls.listCommits({
     owner,
     repo,
