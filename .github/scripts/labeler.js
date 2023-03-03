@@ -22,7 +22,7 @@ async function getCommits() {
 async function main(){
   const commits = await getCommits()
 
-  console.log(commits)
+  // console.log(commits)
 }
 
 main()
