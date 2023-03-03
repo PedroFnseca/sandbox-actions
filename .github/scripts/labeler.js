@@ -1,4 +1,5 @@
 const { context, getOctokit } = require('@actions/github')
+const { Octokit } = require('@octokit/core')
 
 async function getCommits() {
   const { owner, repo } = context.repo
@@ -7,10 +8,9 @@ async function getCommits() {
   const prNumber = process.env.PR_NUMBER ?? 11
 
   try {
-    const { data: commits } = await getOctokit(token).rest.pulls(Array).listCommits({
+    const { data: commits } = await getOctokit(token).rest.pulls(prNumber).listCommits({
       owner,
-      repo,
-      pull_number: prNumber
+      repo
     })
   
     return commits
