@@ -8,10 +8,10 @@ async function getCommits() {
 
   const octokit = getOctokit(token)
 
-  const { data: commits } = await octokit.pulls.listCommits({
+  const { data: commits } = await getOctokit(token).rest.pulls.listCommits({
     owner,
     repo,
-    pull_number: prNumber
+    pull_number: prNumber,
   })
 
   return commits
