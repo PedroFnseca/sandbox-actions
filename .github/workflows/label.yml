@@ -19,4 +19,5 @@ jobs:
         run: node .github/scripts/labeler.js
 
         env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

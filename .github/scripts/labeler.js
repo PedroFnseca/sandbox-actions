@@ -4,7 +4,7 @@ async function getCommits() {
   const { owner, repo } = context.repo
   
   const token = process.env.GITHUB_TOKEN
-  const prNumber = context.payload.pull_request.number
+  const prNumber = process.env.PR_NUMBER ?? 11
 
   const octokit = getOctokit(token)
 
