@@ -1,10 +1,3 @@
-# This workflow will triage pull requests and apply a label based on the
-# paths that are modified in the pull request.
-#
-# To use this workflow, you will need to set up a .github/labeler.yml
-# file with configuration.  For more information, see:
-# https://github.com/actions/labeler
-
 name: Labeler
 on: 
   push:
@@ -12,14 +5,40 @@ on:
       - 'main'
 
 jobs:
-  label:
-
+  comment-on-commits:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-
     steps:
-    - uses: actions/labeler@v4
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get commits
+        id: get-commits
+        run: |
+          const { context, github } = require('@actions/github');
+
+          async function getCommits() {
+            const owner = context.payload.repository.owner.login;
+            const repo = context.payload.repository.name;
+            const pull_number = context.payload.number;
+            const { data } = await github.rest.pulls.listCommits({
+              owner,
+              repo,
+              pull_number,
+            });
+            return data.map((commit) => commit.commit.message);
+          }
+
+      - name: Comment on PR
+        run: |
+          const { context, github } = require('@actions/github');
+
+          const comment = 'O problema #123 foi corrigido.';
+          const { data: commentData } = await github.rest.issues.createComment({
+            owner: context.payload.repository.owner.login,
+            repo: context.payload.repository.name,
+            issue_number: context.payload.number,
+            body: comment,
+          });
+          console.log(`Comentário criado: ${commentData.html_url}`);
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
