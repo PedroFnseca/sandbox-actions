@@ -1,1 +1,3 @@
-Adicionei a tabela tal
+# teste
+
+alter column teste
