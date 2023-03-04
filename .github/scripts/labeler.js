@@ -16,12 +16,12 @@ function formatCommit(commits, private){
   const { urlRepo } = getCredentials()
 
   const commitsFormated = commits.map(item => {
-    if(private) {
+    if(!private) {
       return {
         avatar: item.author.avatar_url ,
         urlAuthor: item.author.html_url,
         author: item.author.login,
-        message: item.message,
+        message: item.commit.message,
         urlcommit: item.html_url,
         dateTime: item.commit.author.date,
       }
