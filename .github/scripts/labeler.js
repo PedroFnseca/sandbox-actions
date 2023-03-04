@@ -2,7 +2,9 @@ const { context, getOctokit } = require('@actions/github')
 
 function getCredentials(){
   const { owner, repo } = context.repo
-  const prNumber = context.payload.action === 'opened' ? context.payload.pull_request.number : context.payload.issue.number
+  console.log(context.payload.pull_request)
+  const prNumber = context.payload.pull_request.number
+
   const token = process.env.GITHUB_TOKEN
 
   console.log(`getCredentials: ${owner} ${repo} ${prNumber}`)
