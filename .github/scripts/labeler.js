@@ -118,7 +118,7 @@ async function createComment(commit, files, prNumber){
 }
 
 async function main(){
-  console.log(context.payload)
+  console.log(context.payload.commits[0])
 
   const { prNumber } = getCredentials()
 
