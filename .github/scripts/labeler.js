@@ -2,8 +2,7 @@ const { context, getOctokit } = require('@actions/github')
 
 function getCredentials(){
   const { owner, repo } = context.repo
-  console.log(context.payload)
-  const prNumber = context.payload.head_commit.message ? context.payload.head_commit.message.split(' ')[4] : context.payload.pull_request.number
+  const prNumber = context.payload.pull_request.number || context.payload.head_commit.message.match(/\(#(\d+)\)/)[1]
 
   const token = process.env.GITHUB_TOKEN
 
