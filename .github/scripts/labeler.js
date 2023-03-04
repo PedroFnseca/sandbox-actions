@@ -6,8 +6,6 @@ function getCredentials(){
 
   const token = process.env.GITHUB_TOKEN
 
-  console.log(`getCredentials: ${owner} ${repo} ${prNumber}`)
-
   return { owner, repo, token, prNumber }
 }
 
@@ -120,6 +118,8 @@ async function createComment(commit, files, prNumber){
 }
 
 async function main(){
+  console.log(context.payload)
+
   const { prNumber } = getCredentials()
 
   if(!prNumber) return console.log('PR number not found')
