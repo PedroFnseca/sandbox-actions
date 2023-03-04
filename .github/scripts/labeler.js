@@ -98,7 +98,7 @@ async function getFiles(private) {
   }
 }
 
-function createCommentMarkdown(commits, files){
+function createCommentMarkdown(commits, files, private){
     let markdown = `## Commits\n\n`
 
     markdown += `| Avatar | Author | Message | Commit | Date |\n`
