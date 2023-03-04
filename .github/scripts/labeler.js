@@ -4,6 +4,7 @@ function getCredentials(){
   const { owner, repo } = context.repo
 
   const { private } = context.payload.repository
+
   const prNumber = context.payload.head_commit.message.match(/#(\d+)/)[1] || null
 
   const token = process.env.GITHUB_TOKEN
@@ -13,11 +14,12 @@ function getCredentials(){
 
 function formatCommit(commits){
   const commitsFormated = commits.map(item => {
+    console.log(item)
     return {
       avatar: item.author.avatar_url,
       urlAuthor: item.author.html_url,
       author: item.author.login,
-      message: item.commit.message,
+      // message: item.commit.message,
       urlcommit: item.html_url,
       dateTime: item.commit.author.date,
     }
