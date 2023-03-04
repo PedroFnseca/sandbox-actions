@@ -15,8 +15,6 @@ function getCredentials(){
 function formatCommit(commits, private){
   const { urlRepo } = getCredentials()
 
-  console.log(commits)
-
   const commitsFormated = commits.map(item => {
     if(private) {
       return {
@@ -106,6 +104,8 @@ function createCommentMarkdown(commits, files){
     markdown += `| Avatar | Author | Message | Commit | Date |\n`
 
     markdown += `| --- | --- | --- | --- | --- |\n`
+
+    console.log(commits)
 
     markdown += commits.map(item => {
       return `| <img src="${item.avatar}" width="50" height="50" /> | [${item.author}](item.urlAuthor) | ${item.message} | [Show more](${item.urlcommit}) | ${item.dateTime} |`
