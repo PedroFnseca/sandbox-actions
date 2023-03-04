@@ -4,24 +4,26 @@ function getCredentials(){
   const { owner, repo } = context.repo
 
   const { private } = context.payload.repository
-
   const prNumber = context.payload.head_commit.message.match(/#(\d+)/)[1] || null
+  const urlRepo = context.payload.repository.html_url
 
   const token = process.env.GITHUB_TOKEN
 
-  return { owner, repo, token, prNumber, private }
+  return { owner, repo, token, prNumber, private, urlRepo }
 }
 
 function formatCommit(commits){
+  const { urlRepo } = getCredentials()
+
   const commitsFormated = commits.map(item => {
     console.log(item)
     return {
-      avatar: item.author.avatar_url,
-      urlAuthor: item.author.html_url,
-      author: item.author.login,
-      // message: item.commit.message,
-      urlcommit: item.html_url,
-      dateTime: item.commit.author.date,
+      avatar: item.author.avatar_url ? item.author.avatar_url : `${urlRepo}/.github.scripts/avatar.webp`,
+      urlAuthor: item.author.html_url ? item.author.html_url : `https://github.com/${item.author.username}`,
+      author: item.author.login ? item.author.login : item.author.username,
+      message: item.commit.message ? item.commit.message : item.message,
+      urlcommit: item.html_url ? item.html_url : item.url,
+      dateTime: item.commit.author.date ? item.commit.author.date : item.timestamp,
     }
   }).sort((a, b) => {
     return new Date(b.dateTime) - new Date(a.dateTime)
