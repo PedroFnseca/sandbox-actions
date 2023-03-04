@@ -15,8 +15,9 @@ function getCredentials(){
 function formatCommit(commits, private){
   const { urlRepo } = getCredentials()
 
+  console.log(commits)
+
   const commitsFormated = commits.map(item => {
-    
     if(private) {
       return {
         avatar: item.author.avatar_url ,
