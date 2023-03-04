@@ -12,18 +12,29 @@ function getCredentials(){
   return { owner, repo, token, prNumber, private, urlRepo }
 }
 
-function formatCommit(commits){
+function formatCommit(commits, private){
   const { urlRepo } = getCredentials()
 
   const commitsFormated = commits.map(item => {
-    console.log(item)
-    return {
-      avatar: item.author.avatar_url ? item.author.avatar_url : `${urlRepo}/.github.scripts/avatar.webp`,
-      urlAuthor: item.author.html_url ? item.author.html_url : `https://github.com/${item.author.username}`,
-      author: item.author.login ? item.author.login : item.author.username,
-      message: item.commit.message ? item.commit.message : item.message,
-      urlcommit: item.html_url ? item.html_url : item.url,
-      dateTime: item.commit.author.date ? item.commit.author.date : item.timestamp,
+    
+    if(private) {
+      return {
+        avatar: item.author.avatar_url ,
+        urlAuthor: item.author.html_url,
+        author: item.author.login,
+        message: item.commit.message,
+        urlcommit: item.html_url,
+        dateTime: item.commit.author.date,
+      }
+    } else {
+      return {
+        avatar: `${urlRepo}/.github.scripts/avatar.webp`,
+        urlAuthor: `https://github.com/${item.author.username}`,
+        author: item.author.username,
+        message: item.message,
+        urlcommit: item.url,
+        dateTime: item.timestamp,
+      }
     }
   }).sort((a, b) => {
     return new Date(b.dateTime) - new Date(a.dateTime)
@@ -39,7 +50,7 @@ async function getCommits(private) {
     if(private) {
       const { commits } = context.payload
 
-       return formatCommit(commits)
+       return formatCommit(commits, private)
     } else {
       const { data: commits } = await getOctokit(token).rest.pulls.listCommits({
         owner,
@@ -47,10 +58,10 @@ async function getCommits(private) {
         pull_number: prNumber,
       })
   
-      return formatCommit(commits)
+      return formatCommit(commits, private)
     }
   } catch (err){
-    console.log(err)
+    console.error(err)
   }
 }
 
@@ -84,7 +95,7 @@ async function getFiles(private) {
 
     return formatFiles(files)
   } catch (err){
-    console.log(err)
+    console.error(err)
   }
 }
 
@@ -131,7 +142,7 @@ async function createComment({commit, files, prNumber, private}){
     console.log('Comment created')
 
   } catch (err){
-    console.log(err)
+    console.error(err)
   }
 }
 
