@@ -135,16 +135,17 @@ async function main(){
   console.time('time')
   console.log('Starting...')
 
-  const { private } = getCredentials()
+  const { prNumber, private } = getCredentials()
 
-  if(private) return console.warn('Is not possible get the files from a private repository')
+  if(!prNumber) console.warn('Is not possible get the PR number')
+  if(private) console.warn('Is not possible get the files from a private repository')
 
   const commits = await getCommits(private)
   const files = await getFiles(private)
 
   await createComment({commits, files, prNumber, private})
 
-  console.log('Finished.')
+  console.log('Finished')
   console.timeEnd('time')
 }
 
