@@ -28,17 +28,23 @@ function formatCommit(commits){
   return commitsFormated
 }
 
-async function getCommits() {
+async function getCommits(private) {
   const { owner, repo, token, prNumber } = getCredentials()
 
   try {
-    const { data: commits } = await getOctokit(token).rest.pulls.listCommits({
-      owner,
-      repo,
-      pull_number: prNumber,
-    })
+    if(private) {
+      const { commits } = context.payload
 
-    return formatCommit(commits)
+       return formatCommit(commits)
+    } else {
+      const { data: commits } = await getOctokit(token).rest.pulls.listCommits({
+        owner,
+        repo,
+        pull_number: prNumber,
+      })
+  
+      return formatCommit(commits)
+    }
   } catch (err){
     console.log(err)
   }
@@ -60,8 +66,10 @@ async function formatFiles(files) {
   return filesFormated
 }
 
-async function getFiles() {
+async function getFiles(private) {
   const { owner, repo, token, prNumber } = getCredentials()
+
+  if(private) return []
 
   try {
     const { data: files } = await getOctokit(token).rest.pulls.listFiles({
@@ -87,6 +95,8 @@ function createCommentMarkdown(commits, files){
       return `| <img src="${item.avatar}" width="50" height="50" /> | [${item.author}](item.urlAuthor) | ${item.message} | [Show more](${item.urlcommit}) | ${item.dateTime} |`
     }).join('\n')
 
+    if(private) return markdown
+
     markdown += `\n---\n`
 
     markdown += `\n## Files\n`
@@ -102,9 +112,9 @@ function createCommentMarkdown(commits, files){
   return markdown
 }
 
-async function createComment(commit, files, prNumber){
+async function createComment({commit, files, prNumber, private}){
   const { owner, repo, token } = getCredentials()
-  const commentMarkdown = createCommentMarkdown(commit, files)
+  const commentMarkdown = createCommentMarkdown(commit, files, private)
 
   try {
     await getOctokit(token).rest.issues.createComment({
@@ -124,12 +134,13 @@ async function main(){
 
   const { prNumber, private } = getCredentials()
 
-  if(!prNumber || private) return console.log('PR number not found')
+  if(!prNumber) return console.log('Is not possible get the PR number')
+  if(private) return console.log('Is not possible get the files from a private repository')
 
-  const commits = await getCommits()
-  const files = await getFiles()
+  const commits = await getCommits(private)
+  const files = await getFiles(private)
 
-  await createComment(commits, files, prNumber)
+  await createComment({commits, files, prNumber, private})
 }
 
 main()
