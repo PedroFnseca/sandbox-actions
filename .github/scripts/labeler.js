@@ -138,7 +138,7 @@ async function createComment(commits, files, prNumber, private){
       body: commentMarkdown,
     })
 
-    console.log('Comment created')
+    console.log('Comment created!')
 
   } catch (err){
     console.error(err)
