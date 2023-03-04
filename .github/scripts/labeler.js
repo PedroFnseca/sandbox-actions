@@ -1,14 +1,9 @@
 const { context, getOctokit } = require('@actions/github')
 
 function getCredentials(){
-  // const { owner, repo } = context.repo
-  // const token = process.env.GITHUB_TOKEN
-  // const prNumber = process.env.PR_NUMBER
-
-  const owner = 'Pedrofnseca'
-  const repo = 'teste'
-  const token = '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'
-  const prNumber = 11
+  const { owner, repo } = context.repo
+  const token = process.env.GITHUB_TOKEN
+  const prNumber = process.env.PR_NUMBER
 
   return { owner, repo, token, prNumber }
 }
