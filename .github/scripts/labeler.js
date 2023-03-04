@@ -1,12 +1,13 @@
 const { context, getOctokit } = require('@actions/github')
 
 function getCredentials(){
-  const { owner, repo } = context.repo
+  const { owner, repo, private } = context.repo
+
   const prNumber = context.payload.head_commit.message.match(/#(\d+)/)[1] || null
 
   const token = process.env.GITHUB_TOKEN
 
-  return { owner, repo, token, prNumber }
+  return { owner, repo, token, prNumber, private }
 }
 
 function formatCommit(commits){
@@ -118,11 +119,11 @@ async function createComment(commit, files, prNumber){
 }
 
 async function main(){
-  console.log(context.payload.commits[0])
+  console.log(context.payload)
 
-  const { prNumber } = getCredentials()
+  const { prNumber, private } = getCredentials()
 
-  if(!prNumber) return console.log('PR number not found')
+  if(!prNumber || private) return console.log('PR number not found')
 
   const commits = await getCommits()
   const files = await getFiles()
