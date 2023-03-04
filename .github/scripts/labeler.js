@@ -128,9 +128,9 @@ function createCommentMarkdown(commits, files){
   return markdown
 }
 
-async function createComment({commit, files, prNumber, private}){
+async function createComment({commits, files, prNumber, private}){
   const { owner, repo, token } = getCredentials()
-  const commentMarkdown = createCommentMarkdown(commit, files, private)
+  const commentMarkdown = createCommentMarkdown(commits, files, private)
 
   try {
     await getOctokit(token).rest.issues.createComment({
