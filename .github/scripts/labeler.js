@@ -124,23 +124,29 @@ async function createComment({commit, files, prNumber, private}){
       body: commentMarkdown,
     })
 
+    console.log('Comment created')
+
   } catch (err){
     console.log(err)
   }
 }
 
 async function main(){
-  console.log(context.payload)
+  console.time('time')
+  console.log('Starting...')
 
   const { prNumber, private } = getCredentials()
 
-  if(!prNumber) return console.log('Is not possible get the PR number')
-  if(private) return console.log('Is not possible get the files from a private repository')
+  if(!prNumber) return console.warn('Is not possible get the PR number')
+  if(private) return console.warn('Is not possible get the files from a private repository')
 
   const commits = await getCommits(private)
   const files = await getFiles(private)
 
   await createComment({commits, files, prNumber, private})
+
+  console.log('Finished.')
+  console.timeEnd('time')
 }
 
 main()
