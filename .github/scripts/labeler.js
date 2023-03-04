@@ -1,9 +1,14 @@
 const { context, getOctokit } = require('@actions/github')
 
 function getCredentials(){
-  const { owner, repo } = context.repo
-  const token = process.env.GITHUB_TOKEN
-  const prNumber = process.env.PR_NUMBER
+  // const { owner, repo } = context.repo
+  // const token = process.env.GITHUB_TOKEN
+  // const prNumber = process.env.PR_NUMBER
+
+  const owner = 'Pedrofnseca'
+  const repo = 'teste'
+  const token = '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'
+  const prNumber = 11
 
   return { owner, repo, token, prNumber }
 }
@@ -41,8 +46,40 @@ async function getCommits() {
   }
 }
 
-function createCommentMarkdown(commits, prNumber){
-    let markdown = `## Commits: ${prNumber}\n\n`
+async function formatFiles(files) {
+  const filesFormated = files.map(item => {
+    return {
+      filename: item.filename,
+      status: item.status,
+      additions: item.additions,
+      deletions: item.deletions,
+      changes: item.changes,
+      patch: item.patch,
+      url: item.blob_url
+    }
+  })
+
+  return filesFormated
+}
+
+async function getFiles() {
+  const { owner, repo, token, prNumber } = getCredentials()
+
+  try {
+    const { data: files } = await getOctokit(token).rest.pulls.listFiles({
+      owner,
+      repo,
+      pull_number: prNumber,
+    })
+
+    return formatFiles(files)
+  } catch (err){
+    console.log(err)
+  }
+}
+
+function createCommentMarkdown(commits, files){
+    let markdown = `## Commits\n\n`
 
     markdown += `| Avatar | Author | Message | Commit | Date |\n`
 
@@ -52,12 +89,24 @@ function createCommentMarkdown(commits, prNumber){
       return `| <img src="${item.avatar}" width="50" height="50" /> | [${item.author}](item.urlAuthor) | ${item.message} | [Show more](${item.urlcommit}) | ${item.dateTime} |`
     }).join('\n')
 
+    markdown += `\n---\n`
+
+    markdown += `\n## Files\n`
+
+    markdown += `| Filename | Status | Additions | Deletions | Changes | URL |\n`
+
+    markdown += `| --- | --- | --- | --- | --- | --- |\n`
+
+    markdown += files.map(item => {
+      return `| ${item.filename} | ${item.status} | ${item.additions} | ${item.deletions} | ${item.changes} | [Show archive](${item.url}) |`
+    }).join('\n')
+
   return markdown
 }
 
-async function createComment(commit){
-  const { owner, repo, token, prNumber } = getCredentials()
-  const commentMarkdown = createCommentMarkdown(commit, prNumber)
+async function createComment(commit, files, prNumber){
+  const { owner, repo, token } = getCredentials()
+  const commentMarkdown = createCommentMarkdown(commit, files)
 
   try {
     await getOctokit(token).rest.issues.createComment({
@@ -73,8 +122,13 @@ async function createComment(commit){
 }
 
 async function main(){
+  const { prNumber } = getCredentials()
+
   const commits = await getCommits()
-  await createComment(commits)
+  const files = await getFiles()
+
+  console.log()
+  await createComment(commits, files, prNumber)
 }
 
 main()
