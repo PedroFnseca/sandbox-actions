@@ -5,6 +5,8 @@ function getCredentials(){
   const token = process.env.GITHUB_TOKEN
   const prNumber = process.env.PR_NUMBER
 
+  console.log(`getCredentials: ${owner} ${repo} ${token} ${prNumber}`)
+
   return { owner, repo, token, prNumber }
 }
 
