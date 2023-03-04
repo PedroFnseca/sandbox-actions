@@ -21,7 +21,7 @@ function formatCommit(commits, private){
         avatar: item.author.avatar_url ,
         urlAuthor: item.author.html_url,
         author: item.author.login,
-        message: item.commit.message,
+        message: item.message,
         urlcommit: item.html_url,
         dateTime: item.commit.author.date,
       }
@@ -105,8 +105,6 @@ function createCommentMarkdown(commits, files){
 
     markdown += `| --- | --- | --- | --- | --- |\n`
 
-    console.log(commits)
-
     markdown += commits.map(item => {
       return `| <img src="${item.avatar}" width="50" height="50" /> | [${item.author}](item.urlAuthor) | ${item.message} | [Show more](${item.urlcommit}) | ${item.dateTime} |`
     }).join('\n')
@@ -128,7 +126,7 @@ function createCommentMarkdown(commits, files){
   return markdown
 }
 
-async function createComment({commits, files, prNumber, private}){
+async function createComment(commits, files, prNumber, private){
   const { owner, repo, token } = getCredentials()
   const commentMarkdown = createCommentMarkdown(commits, files, private)
 
@@ -159,7 +157,7 @@ async function main(){
   const commits = await getCommits(private)
   const files = await getFiles(private)
 
-  await createComment({commits, files, prNumber, private})
+  await createComment(commits, files, prNumber, private)
 
   console.log('Finished')
   console.timeEnd('time')
